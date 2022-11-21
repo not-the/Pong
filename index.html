@@ -11,17 +11,24 @@
 </head>
 <body>
     <div id="container">
+        <div id="c"></div>
         <div class="scoreboard">
             <p id="score_p1">0</p>
             <p id="score_p2">0</p>
         </div>
         <div id="misc" style="visibility: hidden;">Waiting for player 2</div>
+
+        <div class="description">
+            <h1>Pong</h1>
+            <h3>Controls</h3>
+            <p>Player 1: W, A</p>
+            <p>Player 2: Up/Down arrow keys</p><br/>
+            Ball speed: <input type="number" id="ball_speed" value="8" class="config"><br/>
+            Paddle speed: <input type="number" id="paddle_speed" value="6" class="config"><br/>
+            <!-- <button id="accept_changes">Accept</button> -->
+        </div>
     </div>
 
-    <h3>Controls</h3>
-    <p>Player 1: W, A</p>
-    <p>Player 2: Up/Down arrow keys</p>
-    
     <!-- JS -->
     <script src="script.js"></script>
 </body>

@@ -1,3 +1,8 @@
+:root {
+    --text: white;
+    --text-alt: rgb(200, 200, 200);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -8,9 +13,19 @@
 }
 body {
     background-color: rgb(24, 24, 26);
-    /* margin: 0; */
-    color: white;
+    color: var(--text-alt);
     font-family: 'Courier New', Courier, monospace;
+}
+button, input {
+    font-size: 12pt;
+    border-radius: 6px;
+    /* border: none; */
+}
+button {
+    padding: 3px 12px;
+}
+input {
+    padding: 2px 4px;
 }
 canvas {
     width: 1200px;
@@ -24,9 +39,10 @@ canvas {
     width: 1200px;
     height: 675px;
     /* width: 100%; */
+    margin: 18px auto;
 }
 .scoreboard, #misc {
-    color: rgb(200, 200, 200);
+    color: var(--text-alt);
     font-size: 24pt;
     font-weight: bolder;
 
@@ -46,4 +62,16 @@ canvas {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+
+
+.description {
+    padding: 18px 0;
+}
+h1 {
+    color: var(--text);
+    font-size: 32pt;
+    /* border-bottom: 1px solid rgb(64, 64, 64); */
+    margin-bottom: 12px;
 }
