@@ -1,3 +1,3 @@
 # Pong
 
-Pong game
+Simple Pong clone made with PIXI.JS
