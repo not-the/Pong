@@ -10,12 +10,18 @@
     user-select: none;
     touch-action: manipulation;
     -webkit-touch-callout: none;
+
+    image-rendering: pixelated;
 }
 body {
     background-color: rgb(24, 24, 26);
     color: var(--text-alt);
     font-family: 'Courier New', Courier, monospace;
 }
+a {
+    color: rgb(82, 143, 255);
+}
+a:hover { text-decoration: none; }
 button, input {
     font-size: 12pt;
     border-radius: 6px;

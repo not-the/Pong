@@ -13,8 +13,6 @@ const resize = 2;
 const center_x = width / 2 - size;
 const center_y = height / 2 - size;
 size *= resize; // square = 32px
-const paddle_ratio = 3;
-const paddle_height = size * paddle_ratio;
 const low_height = height - size*3;
 const boundary_left = size * 2;
 const boundary_right = (width - size * 2) - size;
@@ -23,6 +21,7 @@ const boundary_right = (width - size * 2) - size;
 var config = {
     ball_speed: 8,
     paddle_speed: 6,
+    paddle_size: 3, // ratio, 1 would be a square
 }
 var pressed = {};
 var velocity = {
@@ -36,15 +35,17 @@ var score = {
 var game = {
     paused: false,
     winstate: false,
+    ball_owner: false,
 }
 
 // Canvas
 let app = new PIXI.Application({ width:width, height:height });
+PIXI.settings.SCALE_MODE = "nearest";
 c_container.appendChild(app.view);
 
 /** Creates a sprite and returns it */
-function addSprite(sX=resize, sY=resize, posX=0, posY=0) {
-    let sprite = PIXI.Sprite.from('./assets/white.png');
+function addSprite(sX=resize, sY=resize, posX=0, posY=0, asset="./assets/white.png") {
+    let sprite = PIXI.Sprite.from(asset);
     sprite.scale.x = sX;
     sprite.scale.y = sY;
     sprite.position.x = posX;
@@ -54,10 +55,11 @@ function addSprite(sX=resize, sY=resize, posX=0, posY=0) {
 }
 
 // Sprites
+let divider = addSprite(resize, 30, center_x-size, 0, './assets/divide.png');
 let ball = addSprite(resize, resize, center_x, center_y);
 var player = {
-    1: addSprite(resize, resize * paddle_ratio, size, center_y - size),
-    2: addSprite(resize, resize * paddle_ratio, width - (size * 2), center_y - size),
+    1: addSprite(resize, resize * config.paddle_size, size, center_y - size),
+    2: addSprite(resize, resize * config.paddle_size, width - (size * 2), center_y - size),
 }
 player['1'].keyrise = 'w';
 player['1'].keyfall = 's';
@@ -72,23 +74,25 @@ function reset() {
     velocity.y = 0;
     ball.position.x = center_x;
     ball.position.y = center_y;
+    game.ball_owner = false;
+    game.winstate = false;
     scoreP1.innerText = score['1'];
     scoreP2.innerText = score['2'];
-    game.winstate = false;
 }
 
-// Add a ticker callback to move the sprite back and forth
+// Game ticker
 let elapsed = 0.0;
 app.ticker.add((delta) => {
     elapsed += delta;
     if(game.paused) return;
     const s = config.paddle_speed * delta;
+    let paddleSize = size * config.paddle_size;
 
     /** Moves the player when button is pressed */
     function moveCheck(p='1') {
         let target = player[p];
         if(pressed[target.keyrise] && target.position.y - s >= 0) target.position.y -= s;
-        if(pressed[target.keyfall] && target.position.y + s <= low_height) target.position.y += s;
+        if(pressed[target.keyfall] && target.position.y + s <= height - paddleSize) target.position.y += s;
     }
     moveCheck('1');
     moveCheck('2');
@@ -99,10 +103,11 @@ app.ticker.add((delta) => {
         if(p == '2' && ball.position.x < boundary_right || game.winstate) return;
     
         // Paddle aligned
-        if(ball.position.y + size >= player[p].position.y && ball.position.y <= player[p].position.y + paddle_height) {
+        if(ball.position.y + size >= player[p].position.y && ball.position.y <= player[p].position.y + paddleSize) {
             // console.log('bounce!');
             velocity.x *= -1;
-            velocity.y = (ball.position.y - player[p].position.y - 32) / 10;
+            velocity.y = (ball.position.y - player[p].position.y - (paddleSize / 3)) / 10;
+            game.ball_owner = p;
         } else {
             // console.log('out of bounds');
             game.winstate = true;
@@ -117,7 +122,7 @@ app.ticker.add((delta) => {
 
     // Vertical bounce
     if(ball.position.y <= 0 || ball.position.y >= low_height + 64) {
-        console.log('out of bounds, up/down');
+        // console.log('out of bounds, up/down');
         velocity.y *= -1;
     }
 
@@ -126,23 +131,35 @@ app.ticker.add((delta) => {
     ball.y += velocity.y * delta;
 });
 
-
+// Keyboard
 document.addEventListener('keydown', event => {
     pressed[event.key] = true;
-});
-document.addEventListener('keyup', event => {
+
+    // Pause
     if(event.key == 'Escape') {
         game.paused = !game.paused;
         misc.innerText = 'Paused';
         misc.style.visibility = game.paused ? 'visible' : 'hidden';
     }
+
+    // Prevent scrolling
+    if(event.key == 'ArrowUp' || event.key == 'ArrowDown' || event.key == ' ') event.preventDefault();
+});
+document.addEventListener('keyup', event => {
     pressed[event.key] = false;
 });
 
+// Config
 document.querySelectorAll('.config').forEach(element => element.addEventListener('change', event => {
     // if(event.key != 'Enter') return;
     let name = element.id;
     let value = element.value;
     config[name] = value;
+    if(name == 'paddle_size') {
+        for(i in player) {
+            let p = player[i];
+            p.scale.y = config[name] * resize;
+        }
+    }
     reset();
 }));

@@ -1,0 +1,11 @@
+v3
+- Added a screen divider
+- Added paddle size option
+- Added footer w/ PIXI.JS credit
+- Arrow keys/spacebar no longer scroll the page
+
+v2
+- Condensed collision code
+- Added ball speed and paddle speed config options
+
+v1
