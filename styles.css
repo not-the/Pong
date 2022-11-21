@@ -1,0 +1,49 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+}
+body {
+    background-color: rgb(24, 24, 26);
+    /* margin: 0; */
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+}
+canvas {
+    width: 1200px;
+    height: 675px;
+}
+
+
+
+#container {
+    position: relative;
+    width: 1200px;
+    height: 675px;
+    /* width: 100%; */
+}
+.scoreboard, #misc {
+    color: rgb(200, 200, 200);
+    font-size: 24pt;
+    font-weight: bolder;
+
+    padding: 12px 32px;
+
+    position: absolute;
+    mix-blend-mode: difference;
+}
+.scoreboard {
+    width: 100%;
+    font-size: 120pt;
+    bottom: 0px;
+    display: flex;
+    justify-content: space-between;
+}
+#misc {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
