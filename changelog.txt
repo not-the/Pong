@@ -1,3 +1,7 @@
+v4
+- Hopefully fixed a bug where the ball would appear to collide with the paddle but not change directions
+- Fixed the divider not being in the middle of the screen
+
 v3
 - Added a screen divider
 - Added paddle size option

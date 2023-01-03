@@ -44,7 +44,7 @@ PIXI.settings.SCALE_MODE = "nearest";
 c_container.appendChild(app.view);
 
 /** Creates a sprite and returns it */
-function addSprite(sX=resize, sY=resize, posX=0, posY=0, asset="./assets/white.png") {
+function addSprite(sX=resize, sY=resize, posX=0, posY=0, asset="./assets/blank.png") {
     let sprite = PIXI.Sprite.from(asset);
     sprite.scale.x = sX;
     sprite.scale.y = sY;
@@ -55,8 +55,8 @@ function addSprite(sX=resize, sY=resize, posX=0, posY=0, asset="./assets/white.p
 }
 
 // Sprites
-let divider = addSprite(resize, 30, center_x-size, 0, './assets/divide.png');
-let ball = addSprite(resize, resize, center_x, center_y);
+let divider = addSprite(resize, 30, center_x, 0, './assets/divide.png');
+let ball = addSprite(resize, resize, center_x, center_y/*, "./assets/ball2.png"*/);
 var player = {
     1: addSprite(resize, resize * config.paddle_size, size, center_y - size),
     2: addSprite(resize, resize * config.paddle_size, width - (size * 2), center_y - size),
@@ -101,7 +101,9 @@ app.ticker.add((delta) => {
     function paddleCheck(p='1') {
         if(p == '1' && ball.position.x > boundary_left  || game.winstate) return;
         if(p == '2' && ball.position.x < boundary_right || game.winstate) return;
-    
+        let sign = p == '2' ? 1 : -1;
+        if(Math.sign(velocity.x) != sign) return; // going in opposite direction, no need to test
+
         // Paddle aligned
         if(ball.position.y + size >= player[p].position.y && ball.position.y <= player[p].position.y + paddleSize) {
             // console.log('bounce!');
